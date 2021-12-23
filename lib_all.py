@@ -12,6 +12,12 @@ import urllib.request
 import zipfile
 # Nếu là file tar thì dùng cái dưới
 import tarfile
+from matplotlib import pyplot as plt
+# Sử dụng trong augmentation.py
+from torchvision import transforms
+import types
+from numpy import random
+
 
 # Cài đặt các tham số ngẫu nhiên
 torch.manual_seed(1234)
