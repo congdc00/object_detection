@@ -6,6 +6,8 @@ import torch
 import torch.utils.data as data
 import os
 import numpy as np
+#noron network
+import torch.nn as nn
 #gửi request tới trang chứa đường link download của mình
 import urllib.request
 # File download về là file zip nên phải unzip ra
