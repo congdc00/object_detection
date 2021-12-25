@@ -18,8 +18,11 @@ from matplotlib import pyplot as plt
 # Sử dụng trong augmentation.py
 from torchvision import transforms
 import types
+import pandas as pd
 from numpy import random
+from math import sqrt
 
+import itertools
 
 # Cài đặt các tham số ngẫu nhiên
 torch.manual_seed(1234)
