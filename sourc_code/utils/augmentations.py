@@ -1,4 +1,10 @@
-from lib_all import *
+import torch
+from torchvision import transforms
+import cv2
+import numpy as np
+import types
+from numpy import random
+
 
 def intersect(box_a, box_b):
     max_xy = np.minimum(box_a[:, 2:], box_b[2:])
@@ -26,11 +32,11 @@ def jaccard_numpy(box_a, box_b):
     union = area_a + area_b - inter
     return inter / union  # [A,B]
 
-# Kết hợp các cái transform lại với nhau, với tham số đưa vào là img, boxes, labels
+
 class Compose(object):
     """Composes several augmentations together.
     Args:
-        transforms (List[Transform]): danh sách các hàm transform.
+        transforms (List[Transform]): list of transforms to compose.
     Example:
         >>> augmentations.Compose([
         >>>     transforms.CenterCrop(10),
@@ -57,12 +63,12 @@ class Lambda(object):
     def __call__(self, img, boxes=None, labels=None):
         return self.lambd(img, boxes, labels)
 
-# Chuyển đồi từ dạng integer về dạng float32
+
 class ConvertFromInts(object):
     def __call__(self, image, boxes=None, labels=None):
         return image.astype(np.float32), boxes, labels
 
-# Trừ đi giá trị trung bình để chuẩn hóa bức ảnh
+
 class SubtractMeans(object):
     def __init__(self, mean):
         self.mean = np.array(mean, dtype=np.float32)
@@ -72,11 +78,10 @@ class SubtractMeans(object):
         image -= self.mean
         return image.astype(np.float32), boxes, labels
 
-# Chuyển các thông số trên annotation về dạng gốc
+
 class ToAbsoluteCoords(object):
     def __call__(self, image, boxes=None, labels=None):
         height, width, channels = image.shape
-        # nhân ngược lại
         boxes[:, 0] *= width
         boxes[:, 2] *= width
         boxes[:, 1] *= height
@@ -84,7 +89,7 @@ class ToAbsoluteCoords(object):
 
         return image, boxes, labels
 
-#Chuyển giá trị pixel thực sự của bức ảnh về giá trị chia cho chiều cao, rộng
+
 class ToPercentCoords(object):
     def __call__(self, image, boxes=None, labels=None):
         height, width, channels = image.shape
@@ -171,9 +176,9 @@ class RandomContrast(object):
 
     # expects float image
     def __call__(self, image, boxes=None, labels=None):
-        if random.randint(2): # Trả ra 0 hoặc 1
+        if random.randint(2):
             alpha = random.uniform(self.lower, self.upper)
-            image *= alpha # Chỉ thay đổi ảnh thôi
+            image *= alpha
         return image, boxes, labels
 
 
@@ -303,7 +308,7 @@ class RandomSampleCrop(object):
 
                 return current_image, current_boxes, current_labels
 
-# Mở rộng ra bức ảnh mới to hơn
+
 class Expand(object):
     def __init__(self, mean):
         self.mean = mean
@@ -321,7 +326,7 @@ class Expand(object):
             (int(height*ratio), int(width*ratio), depth),
             dtype=image.dtype)
         expand_image[:, :, :] = self.mean
-        expand_image[int(top):int(top + height), # Nhét ảnh gốc vào ảnh to mới
+        expand_image[int(top):int(top + height),
         int(left):int(left + width)] = image
         image = expand_image
 
@@ -367,18 +372,18 @@ class SwapChannels(object):
         image = image[:, :, self.swaps]
         return image
 
-#đổi các thông số về màu sắc random
+
 class PhotometricDistort(object):
     def __init__(self):
         self.pd = [
-            RandomContrast(), #Thay đổi độ tương pphản
+            RandomContrast(),
             ConvertColor(transform='HSV'),
-            RandomSaturation(), #Thay đổi độ bão hòa
-            RandomHue(), #Thay đổi màu sắc
-            ConvertColor(current='HSV', transform='BGR'), #Chuyển về dạng BGR
+            RandomSaturation(),
+            RandomHue(),
+            ConvertColor(current='HSV', transform='BGR'),
             RandomContrast()
         ]
-        self.rand_brightness = RandomBrightness() #random độ sáng của bức ảnh
+        self.rand_brightness = RandomBrightness()
         self.rand_light_noise = RandomLightingNoise()
 
     def __call__(self, image, boxes, labels):

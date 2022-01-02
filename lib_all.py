@@ -5,7 +5,6 @@ import cv2
 import torch
 import torch.utils.data as data
 from torch.autograd import Function # tu dong tinh gradient
-import os
 import numpy as np
 #noron network
 import torch.nn as nn
