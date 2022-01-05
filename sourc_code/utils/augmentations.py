@@ -168,6 +168,9 @@ class ConvertColor(object):
 
 
 class RandomContrast(object):
+    """
+    Thay đổi độ tương phản
+    """
     def __init__(self, lower=0.5, upper=1.5):
         self.lower = lower
         self.upper = upper
@@ -177,7 +180,7 @@ class RandomContrast(object):
     # expects float image
     def __call__(self, image, boxes=None, labels=None):
         if random.randint(2):
-            alpha = random.uniform(self.lower, self.upper)
+            alpha = random.uniform(self.lower, self.upper) #Tạo ra phân bố đề trong khoảng 0.5 - 1.5
             image *= alpha
         return image, boxes, labels
 
@@ -376,10 +379,10 @@ class SwapChannels(object):
 class PhotometricDistort(object):
     def __init__(self):
         self.pd = [
-            RandomContrast(),
-            ConvertColor(transform='HSV'),
-            RandomSaturation(),
-            RandomHue(),
+            RandomContrast(), # random độ tương phản
+            ConvertColor(transform='HSV'), # Chuyển kênh màu
+            RandomSaturation(),  # random độ bão hòa
+            RandomHue(), #
             ConvertColor(current='HSV', transform='BGR'),
             RandomContrast()
         ]
