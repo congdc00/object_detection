@@ -6,7 +6,8 @@ Các tài liệu đi kèm về cách xây dựng và các tính được lưu tr
 ## Các công cụ cần thiết
 1. DataSpell
 ## Hướng dẫn chạy
-Đang cập nhập ...
+conda activate object-detection  
+pip install -r requirements.txt
 ## Đóng góp 
 Rất hoan nghênh mọi sự đóng góp của mọi người cho dự án  
 Hãy gửi vể điạ chỉ email congdc193996@sis.hust.edu.vn  
